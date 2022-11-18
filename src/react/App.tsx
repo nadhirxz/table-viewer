@@ -27,6 +27,13 @@ const App: React.FC = () => {
 		<div className="h-screen flex flex-col overflow-hidden">
 			<ThemeContext.Provider value={{ darkTheme, setDarkTheme }}>
 				<TitleBar title={title} />
+				<div className="app">
+					<AnimatePresence>
+						<div className="flex w-full h-full justify-center items-center">
+							<DragDrop className="flex mx-auto my-auto w-96 h-full" />
+						</div>
+					</AnimatePresence>
+				</div>
 			</ThemeContext.Provider>
 		</div>
 	);
