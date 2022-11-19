@@ -41,6 +41,9 @@ ipcMain.handle('open-file', async (_, data) => {
 	if (['.docx', '.doc'].includes(filePath.ext)) {
 		try {
 			const result = await parseDocx(path.resolve(filePath.dir, filePath.base));
+
+			if (!result.length) return { success: false, error: 'no-data' };
+
 			return { success: true, data: result };
 		} catch (error) {
 			console.log(error);
