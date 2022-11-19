@@ -35,3 +35,7 @@ export const parseDocx = async (filePath: string) => {
 
 	return result;
 };
+
+export const parseXlsx = async (filePath: string) => {
+	return '';
+};
