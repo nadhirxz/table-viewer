@@ -30,7 +30,7 @@ const App: React.FC = () => {
 				<div className="app">
 					<AnimatePresence>
 						<div className="flex w-full h-full justify-center items-center">
-							<DragDrop className="flex mx-auto my-auto w-96 h-full" />
+							<DragDrop className="flex flex-col mx-auto my-auto w-96 h-full" />
 						</div>
 					</AnimatePresence>
 				</div>
