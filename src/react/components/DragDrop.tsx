@@ -4,6 +4,7 @@ import { ACCEPTED_FILE_TYPES } from '@/utils/values';
 import React, { useState } from 'react';
 
 interface Props {
+	setTableData: (data: React.Dispatch<React.SetStateAction<any[]>>) => void;
 	className?: string;
 }
 
@@ -23,7 +24,7 @@ const DragDrop: React.FC<Props> = (props: Props) => {
 				if (!res.success) {
 					setErr(res.error);
 				} else {
-					// 
+					props.setTableData(res.data);
 				}
 
 				console.log(res);
@@ -37,7 +38,7 @@ const DragDrop: React.FC<Props> = (props: Props) => {
 
 	return (
 		<>
-			<div className={props.className ?? 'max-w-xl'}>
+			<div className={props.className ?? 'w-1/3'}>
 				<div className="flex flex-col my-auto mx-auto w-full justify-center">
 					<label className="flex justify-center h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
 						<span className="flex items-center space-x-2">
