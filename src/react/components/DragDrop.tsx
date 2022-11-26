@@ -8,6 +8,12 @@ interface Props {
 	className?: string;
 }
 
+const errors = {
+	'file-type': 'Le fichier sélectionné n\'est pas supporté',
+	'no-data': 'Aucune donnée n\'a été trouvée dans le fichier sélectionné',
+	'parse-error': 'Une erreur est survenue lors de la lecture du fichier',
+};
+
 const DragDrop: React.FC<Props> = (props: Props) => {
 	const [loading, setLoading] = useState(false);
 	const [err, setErr] = useState<Response['error']>('');
@@ -19,20 +25,16 @@ const DragDrop: React.FC<Props> = (props: Props) => {
 			setLoading(true);
 
 			invoke('open-file', { path: file.path }).then((res: Response) => {
-				console.log(res);
-
 				if (!res.success) {
-					setErr(res.error);
+					setErr(errors[res.error as keyof typeof errors]);
 				} else {
 					props.setTableData(res.data);
 				}
 
-				console.log(res);
-
 				setLoading(false);
 			});
 		} else {
-			setErr('no file selected');
+			setErr('Aucun fichier sélectionné');
 		}
 	};
 
@@ -45,7 +47,8 @@ const DragDrop: React.FC<Props> = (props: Props) => {
 							<svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 								<path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
 							</svg>
-							<span className="font-medium text-gray-600">Click to select a file</span>
+							{/* Click to select a file in french */}
+							<span className="font-medium text-gray-600">Cliquez pour sélectionner un fichier</span>
 						</span>
 						<input type="file" name="file_upload" accept={ACCEPTED_FILE_TYPES.join(', ').trim()} className="hidden" onChange={selectFile} />
 					</label>
