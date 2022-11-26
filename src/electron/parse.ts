@@ -15,7 +15,9 @@ export const parseDocx = async (filePath: string) => {
 				$(tr)
 					.find('td')
 					.each((k, td) => {
-						row.push($(td).text().trim());
+						// get all html elements inside td
+						const html = $(td).html();
+						row.push(html?.replace('</p><p>', '\n').replace(/(<([^>]+)>)/gi, ''));
 					});
 				table.push(row);
 			});
