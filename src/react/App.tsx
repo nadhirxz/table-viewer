@@ -7,12 +7,15 @@ import { AnimatePresence } from 'framer-motion';
 import DragDrop from './components/DragDrop';
 import './App.css';
 import Table from './components/Table';
+import { invoke } from '@/utils/ipc';
+import Alert, { AlertState } from './components/Alert';
 
 const objectMap = (obj: object, fn: any) => Object.fromEntries(Object.entries(obj).map(([k, v], i) => [k, fn(v, k, i)]));
 
 const App: React.FC = () => {
 	const [darkTheme, setTheme] = useState(theme == 'dark');
 	const [tableData, setTableData] = useState<any>([]);
+	const [alert, setAlert] = useState<AlertState>({ show: false });
 
 	const title = 'Table Viewer';
 
@@ -45,12 +48,25 @@ const App: React.FC = () => {
 										_id: idx,
 										...objectMap(e, (v: any) => ({ text: v })),
 									}))}
+									button={{
+										text: 'Exporter',
+										onClick: () =>
+											invoke('export', tableData).then(res =>
+												setAlert({
+													show: true,
+													title: res.success ? `Fichier "${res.message}" exporté vers le bureau avec succès!` : "Erreur lors de l'export",
+													err: !res.success,
+												})
+											),
+									}}
 								/>
 							)}
 						</AnimatePresence>
 					</main>
 				</div>
 			</ThemeContext.Provider>
+
+			<Alert {...alert} setShow={() => setAlert(prev => ({ ...prev, show: false }))} />
 		</div>
 	);
 };

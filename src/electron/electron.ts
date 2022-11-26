@@ -4,6 +4,9 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { ACCEPTED_FILE_TYPES } from '@/utils/values';
 import { parseDocx, parseXlsx } from './parse';
+import xlsx from 'node-xlsx';
+import { writeFileSync } from 'original-fs';
+import os from 'os';
 dotenv.config();
 
 const isDev = !app.isPackaged;
@@ -56,5 +59,19 @@ ipcMain.handle('open-file', async (_, data) => {
 		return { success: true, data: result };
 	} catch (error) {
 		return { success: false, error: 'parse-error' };
+	}
+});
+
+ipcMain.handle('export', (_, data) => {
+	const fileName = `table_${Date.now()}`;
+
+	try {
+		const buffer = xlsx.build([{ name: ' ', data: [Object.keys(data[0]), ...data.map((item: any) => Object.values(item))], options: {} }]);
+
+		writeFileSync(`${os.homedir()}/Desktop/${fileName}.xlsx`, buffer, 'binary');
+
+		return { success: true, message: fileName };
+	} catch (error) {
+		return { success: false, error: 'export-error' };
 	}
 });
