@@ -12,7 +12,7 @@ interface Props<U> {
 	titles: { name: string; key: string }[];
 	searchKeys: string[];
 	dropdownItems?: Array<{ name: string; onClick: (id: any) => void; icon?: string; textColor?: string }>;
-	button?: { text: string; onClick: () => void; icon?: string };
+	button?: { text: string; onClick: () => void; icon?: JSX.Element };
 	centerPage?: number;
 	elementsPerPage?: number;
 	dropdownReplacement?: { svg: string; onClick: (_id: number) => void };
@@ -41,7 +41,7 @@ const Table = <U extends object>(props: Props<U>) => {
 			? initialElements?.filter(e =>
 					props.searchKeys
 						// @ts-ignore
-						.map(key => formatTextForSearch((e[key].searchText || e[key].text)?.toString()).includes(formatTextForSearch(s)))
+						.map(key => formatTextForSearch((e[key]?.searchText || e[key]?.text)?.toString()).includes(formatTextForSearch(s)))
 						.includes(true)
 			  ) || []
 			: initialElements;
@@ -142,6 +142,17 @@ const Table = <U extends object>(props: Props<U>) => {
 						</select>
 					</div>
 					<input className="input flex-grow" placeholder="Recherche" value={search} onChange={searchChange} />
+					{props.button && (
+						<button className="btn-success" onClick={props.button.onClick}>
+							{props.button.icon ? (
+								<div className="icon">
+									{/* @ts-ignore */}
+									<props.button.icon />
+								</div>
+							) : null}
+							<span>{props.button.text}</span>
+						</button>
+					)}
 				</div>
 				<table className="table-auto mx-auto">
 					<thead className="border-b border-gray-700">
