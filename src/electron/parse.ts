@@ -1,5 +1,6 @@
 import mammoth from 'mammoth';
 import * as cheerio from 'cheerio';
+import xlsx from 'node-xlsx';
 
 export const parseDocx = async (filePath: string) => {
 	const fileData = (await mammoth.convertToHtml({ path: filePath })).value;
@@ -26,7 +27,21 @@ export const parseDocx = async (filePath: string) => {
 	const heads = table[0];
 	const rows = table.slice(1);
 
+	return formatData(heads, rows);
+};
+
+export const parseXlsx = async (filePath: string) => {
+	const data = xlsx.parse(filePath);
+
+	const heads = data[0].data[0];
+	const rows = data[0].data.slice(1);
+
+	return formatData(heads, rows);
+};
+
+export const formatData = (heads: any, rows: any[]) => {
 	const result: any[] = [];
+
 	rows.forEach(row => {
 		const obj: any = {};
 		row.forEach((cell: any, i: number) => {
@@ -35,9 +50,7 @@ export const parseDocx = async (filePath: string) => {
 		result.push(obj);
 	});
 
-	return result;
-};
+	if (heads.includes('رقم الهاتف')) return result.filter((v, i, a) => a.findIndex(v2 => v2['رقم الهاتف'] === v['رقم الهاتف']) === i);
 
-export const parseXlsx = async (filePath: string) => {
-	return '';
+	return result;
 };
