@@ -9,6 +9,8 @@ import restoreIconWhite from '../assets/restore-w-10.png';
 import closeIconWhite from '../assets/close-w-10.png';
 import lightModeIcon from '../assets/light-mode.svg';
 import darkModeIcon from '../assets/dark-mode.svg';
+import reloadDark from '../assets/reload-dark.svg';
+import reloadLight from '../assets/reload-light.svg';
 import { BrowserWindow } from '@electron/remote';
 import { ThemeContext } from '@/utils/context';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -45,6 +47,9 @@ const TitleBar: React.FC<Props> = (props: Props) => {
 		<div className="titlebar flex min-h-[30px] z-50">
 			<p className="m-auto text-sm">{props.title}</p>
 			<div className="absolute top-0 right-0 h-[30px] flex">
+				<div className="m-auto titlebar-button" onClick={() => window.location.reload()} ref={switchButton}>
+					<img className="titlebar-icon w-5" src={darkTheme ? reloadLight : reloadDark} />
+				</div>
 				<div className="m-auto titlebar-button" onClick={() => setDarkTheme && setDarkTheme(!darkTheme)} ref={switchButton}>
 					<img className="titlebar-icon w-5" src={darkTheme ? darkModeIcon : lightModeIcon} />
 				</div>
