@@ -8,8 +8,8 @@
 		"electron:dev": "nodemon",
 		"dev": "concurrently --kill-others \"npm run react:dev\" \"npm run electron:dev\"",
 		"start": "npm run build && electron build/main.js",
-		"package-win": "npm run build && electron-builder build --win -c.extraMetadata.main=build/main.js --publish never",
-		"package-win-portable": "npm run build && electron-builder build --win portable -c.extraMetadata.main=build/main.js --publish never"
+		"package-win": "set NODE_ENV=production&&npm run build && electron-builder build --win -c.extraMetadata.main=build/main.js --publish never",
+		"package-win-portable": "set NODE_ENV=production&&npm run build && electron-builder build --win portable -c.extraMetadata.main=build/main.js --publish never"
 	},
 	"build": {
 		"files": [

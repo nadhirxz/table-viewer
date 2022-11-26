@@ -10,30 +10,41 @@ module.exports = {
 	target: 'electron-main',
 	resolve: {
 		alias: {
-			['@']: path.resolve(__dirname, 'src')
+			['@']: path.resolve(__dirname, 'src'),
 		},
 		extensions: ['.tsx', '.ts', '.js'],
 	},
 	module: {
-		rules: [{
-			test: /\.ts$/,
-			include: /src/,
-			use: [{ loader: 'ts-loader' }]
-		}]
+		rules: [
+			{
+				test: /\.ts$/,
+				include: /src/,
+				use: [{ loader: 'ts-loader' }],
+			},
+		],
 	},
 	output: {
 		path: __dirname + '/build',
-		filename: 'electron.js'
+		filename: 'electron.js',
 	},
 	plugins: [
 		new WebpackShellPluginNext({
 			onBuildEnd: {
-				scripts: ['IF not exist build mkdir build', ...production ? [`echo 'use strict'; const bytenode = require('bytenode'); const fs = require('fs'); const v8 = require('v8'); const path = require('path'); v8.setFlagsFromString('--no-lazy'); if (fs.existsSync(path.join(__dirname, './electron.js'))) { bytenode.compileFile(path.join(__dirname, './electron.js'), path.join(__dirname, './electron.jsc')); fs.unlinkSync(path.join(__dirname, './electron.js')); } process.exit(); > build/compile.js`, `electron build/compile.js && del build\\compile.js`, `echo require('bytenode'); require('./electron.jsc'); > build/main.js`] : [`echo require('./electron.js'); > build/main.js`]],
+				scripts: [
+					'IF not exist build mkdir build',
+					...(production
+						? [
+								`echo 'use strict'; const bytenode = require('bytenode'); const fs = require('fs'); const v8 = require('v8'); const path = require('path'); v8.setFlagsFromString('--no-lazy'); if (fs.existsSync(path.join(__dirname, './electron.js'))) { bytenode.compileFile(path.join(__dirname, './electron.js'), path.join(__dirname, './electron.jsc')); fs.unlinkSync(path.join(__dirname, './electron.js')); } process.exit(); > build/compile.js`,
+								`electron build/compile.js && del build\\compile.js`,
+								`echo require('bytenode'); require('./electron.jsc'); > build/main.js`,
+						  ]
+						: [`echo require('./electron.js'); > build/main.js`]),
+				],
 				blocking: true,
-				parallel: false
-			}
+				parallel: false,
+			},
 		}),
-		new CleanWebpackPlugin({ cleanOnceBeforeBuildPatterns: ['**/*', '!electron.js', ...(production ? [] : ['!electron.js.map'])] }),
+		...(production ? [] : [new CleanWebpackPlugin()]),
 	],
-	...(production && { optimization: require('./webpack.values').optimization })
+	...(production && { optimization: require('./webpack.values').optimization }),
 };
